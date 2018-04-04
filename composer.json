@@ -23,10 +23,12 @@
     "extra": {
         "laravel": {
             "providers": [
-                "CrCms\\User\\Providers\\UserServiceProvider"
             ],
             "aliases": {
-            }
+            },
+            "dont-discover": [
+                "tymon/jwt-auth"
+            ]
         }
     },
     "repositories": {
