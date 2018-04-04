@@ -1,0 +1,38 @@
+{
+    "name": "crcms/user",
+    "description": "crcms user module",
+	"keywords": ["user", "crcms","laravel","php"],
+	"homepage": "https://github.com/crcms/user",
+    "license": "MIT",
+    "require": {
+        "php":">=7.1",
+        "tymon/jwt-auth": "1.0.0-rc.2"
+    },
+	"autoload": {
+        "files": [
+        ],
+        "psr-4": {
+            "CrCms\\User\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "CrCms\\User\\Providers\\UserServiceProvider"
+            ],
+            "aliases": {
+            }
+        }
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.laravel-china.org"
+        }
+    }
+}
