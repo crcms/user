@@ -9,6 +9,7 @@
 
 namespace CrCms\User\Listeners\Repositories;
 
+use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
 
@@ -26,6 +27,7 @@ class UserListener
     {
         $userRepository->addData([
             'password' => Hash::make($data['password']),
+            'status' => UserAttribute::STATUS_INACTIVATE
         ]);
     }
 }
