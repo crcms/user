@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace CrCms\User\Http\Controllers\Api\Auth;
 
-use App\Http\Controllers\Controller;
+use CrCms\Foundation\App\Http\Controllers\Controller;
+use CrCms\User\Models\UserModel;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -34,6 +36,30 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        parent::__construct();
+        //$this->middleware('guest')->except('logout');
+    }
+
+    /**
+     * @param Request $request
+     * @param UserModel $user
+     * @return \Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    protected function authenticated(Request $request, UserModel $user)
+    {
+        $token = auth()->fromUser($user);
+        return $this->response->array([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function username(): string
+    {
+        return 'name';
     }
 }
