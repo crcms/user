@@ -2,9 +2,10 @@
 
 namespace CrCms\User\Providers;
 
-use CrCms\Module\Providers\ModuleServiceProvider;
+use CrCms\Foundation\App\Providers\ModuleServiceProvider;
 use CrCms\User\Listeners\Repositories\UserListener;
 use CrCms\User\Repositories\UserRepository;
+use Tymon\JWTAuth\Providers\LaravelServiceProvider;
 
 /**
  * Class ModuleServiceProvider
@@ -36,6 +37,12 @@ class UserServiceProvider extends ModuleServiceProvider
     public function boot(): void
     {
         parent::boot();
+
+        $this->publishes([
+            $this->basePath . 'config/auth.php' => config_path('auth.php'),
+            $this->basePath . 'config/config.php' => config_path("{$this->name}.php"),
+            $this->basePath . 'resources/lang' => resource_path("lang/vendor/{$this->name}"),
+        ]);
     }
 
     /**
@@ -46,7 +53,9 @@ class UserServiceProvider extends ModuleServiceProvider
         parent::register();
 
         $this->mergeConfigFrom(
-            $this->basePath ."config/auth.php", 'auth'
+            $this->basePath . 'config/auth.php', 'auth'
         );
+
+        $this->app->register(LaravelServiceProvider::class);
     }
 }
