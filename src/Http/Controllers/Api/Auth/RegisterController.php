@@ -3,12 +3,12 @@
 namespace CrCms\User\Http\Controllers\Api\Auth;
 
 use CrCms\Foundation\App\Http\Controllers\Controller;
+use CrCms\User\Events\LoginedEvent;
 use CrCms\User\Models\UserModel;
 use CrCms\User\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Auth\Events\Registered;
 
 class RegisterController extends Controller
 {
@@ -51,7 +51,7 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:15',
+            'name' => 'required|string|max:15|unique:users',
             'email' => 'required|string|email|max:50|unique:users',
             'password' => 'required|string|min:6',
         ]);
@@ -73,11 +73,11 @@ class RegisterController extends Controller
      */
     protected function registered(Request $request, UserModel $user)
     {
-        $token = auth()->fromUser($user);
+        //save login info
+        event(new LoginedEvent($user));
+
         return $this->response->array([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'data' => $this->repository->getTokenInfoByUser($user)
         ]);
     }
 }

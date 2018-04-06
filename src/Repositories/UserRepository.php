@@ -11,6 +11,7 @@ namespace CrCms\User\Repositories;
 
 use CrCms\Foundation\App\Repositories\AbstractRepository;
 use CrCms\User\Models\UserModel;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class UserRepository
@@ -29,5 +30,20 @@ class UserRepository extends AbstractRepository
     public function newModel(): UserModel
     {
         return app(UserModel::class);
+    }
+
+    /**
+     * @param UserModel $userModel
+     * @return array
+     */
+    public function getTokenInfoByUser(UserModel $userModel): array
+    {
+        $token = Auth::guard()->fromUser($userModel);
+
+        return [
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => Auth::guard()->factory()->getTTL() * 60
+        ];
     }
 }

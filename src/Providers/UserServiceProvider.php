@@ -3,8 +3,12 @@
 namespace CrCms\User\Providers;
 
 use CrCms\Foundation\App\Providers\ModuleServiceProvider;
+use CrCms\User\Events\LoginedEvent;
+use CrCms\User\Listeners\LoginedListener;
 use CrCms\User\Listeners\Repositories\UserListener;
 use CrCms\User\Repositories\UserRepository;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Event;
 use Tymon\JWTAuth\Providers\LaravelServiceProvider;
 
 /**
@@ -43,6 +47,8 @@ class UserServiceProvider extends ModuleServiceProvider
             $this->basePath . 'config/config.php' => config_path("{$this->name}.php"),
             $this->basePath . 'resources/lang' => resource_path("lang/vendor/{$this->name}"),
         ]);
+
+        Event::listen(LoginedEvent::class,LoginedListener::class);
     }
 
     /**

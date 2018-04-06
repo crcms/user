@@ -3,7 +3,9 @@
 namespace CrCms\User\Http\Controllers\Api\Auth;
 
 use CrCms\Foundation\App\Http\Controllers\Controller;
+use CrCms\User\Events\LoginedEvent;
 use CrCms\User\Models\UserModel;
+use CrCms\User\Repositories\UserRepository;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 
@@ -34,9 +36,10 @@ class LoginController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(UserRepository $userRepository)
     {
         parent::__construct();
+        $this->repository = $userRepository;
         //$this->middleware('guest')->except('logout');
     }
 
@@ -47,11 +50,10 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, UserModel $user)
     {
-        $token = auth()->fromUser($user);
+        event(new LoginedEvent($user));
+
         return $this->response->array([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'data' => $this->repository->getTokenInfoByUser($user)
         ]);
     }
 
@@ -61,5 +63,28 @@ class LoginController extends Controller
     public function username(): string
     {
         return 'name';
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    protected function attemptLogin(Request $request)
+    {
+        return $this->guard()->attempt(
+            $this->credentials($request), true
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function sendLoginResponse(Request $request)
+    {
+        $this->clearLoginAttempts($request);
+
+        return $this->authenticated($request, $this->guard()->user())
+            ?: redirect()->intended($this->redirectPath());
     }
 }

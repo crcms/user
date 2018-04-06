@@ -27,7 +27,8 @@ class UserListener
     {
         $userRepository->addData([
             'password' => Hash::make($data['password']),
-            'status' => UserAttribute::STATUS_INACTIVATE
+            'status' => UserAttribute::STATUS_INACTIVATE,
+            'register_ip' => request()->getClientIp(),
         ]);
     }
 }
