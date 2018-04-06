@@ -2,6 +2,7 @@
 
 namespace CrCms\User\Mail;
 
+use CrCms\App\Helpers\Hash\Contracts\Verify;
 use CrCms\User\Models\UserModel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -13,9 +14,9 @@ class RegisterMail extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     /**
-     * @var string
+     * @var Verify
      */
-//    public $queue = 'email';
+    protected $verify;
 
     /**
      * @var UserModel
@@ -27,9 +28,10 @@ class RegisterMail extends Mailable implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(UserModel $userModel)
+    public function __construct(UserModel $userModel,Verify $verify)
     {
         $this->user = $userModel;
+        $this->verify = $verify;
     }
 
     /**
@@ -40,7 +42,23 @@ class RegisterMail extends Mailable implements ShouldQueue
     public function build()
     {
         return $this->view('user::emails.register')->with([
-            'url' => ''
+            'register_mail_verify.post' => $this->url()
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    protected function url(): string
+    {
+        $options = [
+            'id' => $this->user->id,
+            'sign' => str_random(10),
+            'time' => now(),
+        ];
+
+        $hash = $this->verify->make($options);
+
+        return route('register_mail_verify.post',array_merge($options,['hash'=>$hash]));
     }
 }

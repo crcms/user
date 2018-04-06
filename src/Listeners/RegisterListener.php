@@ -8,6 +8,7 @@
  */
 
 namespace CrCms\User\Listeners;
+use CrCms\User\Helpers\Hash\Register;
 use CrCms\User\Mail\RegisterMail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Mail;
@@ -18,6 +19,13 @@ use Illuminate\Support\Facades\Mail;
  */
 class RegisterListener
 {
+    protected $registerVerify;
+
+    public function __construct(Register $register)
+    {
+        $this->registerVerify = $register;
+    }
+
     /**
      * @param Registered $registered
      */
@@ -25,7 +33,8 @@ class RegisterListener
     {
         Mail::to($registered->user->email)
             ->queue(
-                ((new RegisterMail($registered->user))->onQueue('emails'))
+                (new RegisterMail($registered->user,$this->registerVerify))
+                ->onQueue('emails')
             );
     }
 }
