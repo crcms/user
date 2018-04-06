@@ -5,6 +5,8 @@ namespace CrCms\User\Providers;
 use CrCms\Foundation\App\Providers\ModuleServiceProvider;
 use CrCms\User\Events\LoginedEvent;
 use CrCms\User\Listeners\LoginedListener;
+use CrCms\User\Listeners\RegisterListener;
+use CrCms\User\Listeners\RegisterMailListener;
 use CrCms\User\Listeners\Repositories\UserListener;
 use CrCms\User\Repositories\UserRepository;
 use Illuminate\Auth\Events\Registered;
@@ -48,6 +50,9 @@ class UserServiceProvider extends ModuleServiceProvider
             $this->basePath . 'resources/lang' => resource_path("lang/vendor/{$this->name}"),
         ]);
 
+        $this->loadViewsFrom($this->basePath.'/resources/views', $this->name);
+
+        Event::listen(Registered::class,RegisterListener::class);
         Event::listen(LoginedEvent::class,LoginedListener::class);
     }
 

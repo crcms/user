@@ -8,8 +8,9 @@
  */
 
 namespace CrCms\User\Listeners;
-use CrCms\User\Repositories\UserRepository;
+use CrCms\User\Mail\RegisterMail;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Class RegisterListener
@@ -17,18 +18,14 @@ use Illuminate\Auth\Events\Registered;
  */
 class RegisterListener
 {
-    protected $userRepository;
-
-    public function __construct(UserRepository $userRepository)
-    {
-        $this->userRepository = $userRepository;
-    }
-
+    /**
+     * @param Registered $registered
+     */
     public function handle(Registered $registered)
     {
-        $this->userRepository->update([
-
-        ],$registered->user->id);
+        Mail::to($registered->user->email)
+            ->queue(
+                ((new RegisterMail($registered->user))->onQueue('emails'))
+            );
     }
-
 }
