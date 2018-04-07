@@ -11,6 +11,7 @@ namespace CrCms\User\Helpers\Hash;
 
 use CrCms\App\Helpers\Hash\Contracts\Verify;
 use CrCms\App\Helpers\Hash\Traits\VerifyTrait;
+use CrCms\User\Attributes\UserAttribute;
 
 /**
  * Class Register
@@ -30,6 +31,7 @@ class Register implements Verify
             'id' => strval($values['id']),
             'sign' => strval($values['sign']),
             'key' => config('app.key'),
+            'type' => strval(UserAttribute::VERIFY_MAIL),
             'time' => strval($values['time']),
         ];
 

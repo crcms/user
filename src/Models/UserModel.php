@@ -80,4 +80,9 @@ class UserModel extends Authenticatable implements JWTSubject
     {
         return [];
     }
+//
+//    public function hasOneVerification()
+//    {
+//        return $this->hasOne(UserVerificationModel::class,'user_id','id')->order
+//    }
 }
