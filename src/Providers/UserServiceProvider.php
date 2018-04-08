@@ -5,9 +5,8 @@ namespace CrCms\User\Providers;
 use CrCms\App\Helpers\Hash\Contracts\HashVerify;
 use CrCms\Foundation\App\Helpers\Hash\Verify;
 use CrCms\Foundation\App\Providers\ModuleServiceProvider;
-use CrCms\User\Events\LoginedEvent;
-use CrCms\User\Listeners\LoginedListener;
-use CrCms\User\Listeners\RegisterListener;
+use CrCms\User\Events\AuthInfoEvent;
+use CrCms\User\Listeners\AuthInfoListener;
 use CrCms\User\Listeners\RegisterMailListener;
 use CrCms\User\Listeners\Repositories\UserListener;
 use CrCms\User\Repositories\UserRepository;
@@ -54,8 +53,8 @@ class UserServiceProvider extends ModuleServiceProvider
 
         $this->loadViewsFrom($this->basePath.'/resources/views', $this->name);
 
-        Event::listen(Registered::class,RegisterListener::class);
-        Event::listen(LoginedEvent::class,LoginedListener::class);
+        Event::listen(Registered::class,RegisterMailListener::class);
+        Event::listen(AuthInfoEvent::class,AuthInfoListener::class);
     }
 
     /**

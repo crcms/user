@@ -13,10 +13,10 @@ use CrCms\User\Models\UserModel;
 use Illuminate\Queue\SerializesModels;
 
 /**
- * Class LoginedEvent
+ * Class AuthInfoEvent
  * @package CrCms\User\Events
  */
-class LoginedEvent
+class AuthInfoEvent
 {
     use SerializesModels;
 
@@ -26,11 +26,17 @@ class LoginedEvent
     public $user;
 
     /**
+     * @var int
+     */
+    public $type;
+
+    /**
      * LoginedEvent constructor.
      * @param UserModel $userModel
      */
-    public function __construct(UserModel $userModel)
+    public function __construct(UserModel $userModel,int $type)
     {
         $this->user = $userModel;
+        $this->type = $type;
     }
 }

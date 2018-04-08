@@ -15,7 +15,7 @@ use CrCms\Foundation\App\Models\Model;
  * Class LoginInfoModel
  * @package CrCms\User\Models
  */
-class LoginInfoModel extends Model
+class AuthInfoModel extends Model
 {
     /**
      * @var bool
@@ -30,5 +30,5 @@ class LoginInfoModel extends Model
     /**
      * @var string
      */
-    protected $table = 'login_info';
+    protected $table = 'auth_info';
 }

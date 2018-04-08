@@ -3,6 +3,8 @@
 namespace CrCms\User\Http\Controllers\Api\Auth;
 
 use CrCms\Foundation\App\Http\Controllers\Controller;
+use CrCms\User\Attributes\UserAttribute;
+use CrCms\User\Events\AuthInfoEvent;
 use CrCms\User\Events\LoginedEvent;
 use CrCms\User\Models\UserModel;
 use CrCms\User\Repositories\UserRepository;
@@ -50,7 +52,7 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, UserModel $user)
     {
-        event(new LoginedEvent($user));
+        event(new AuthInfoEvent($user, UserAttribute::AUTH_TYPE_LOGIN));
 
         return $this->response->array([
             'data' => $this->repository->getTokenInfoByUser($user)

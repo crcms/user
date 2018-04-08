@@ -10,13 +10,13 @@
 namespace CrCms\User\Repositories;
 
 use CrCms\Foundation\App\Repositories\AbstractRepository;
-use CrCms\User\Models\LoginInfoModel;
+use CrCms\User\Models\AuthInfoModel;
 
 /**
- * Class LoginInfoRepository
+ * Class AuthInfoRepository
  * @package CrCms\User\Repositories
  */
-class LoginInfoRepository extends AbstractRepository
+class AuthInfoRepository extends AbstractRepository
 {
     /**
      * @var array
@@ -24,10 +24,10 @@ class LoginInfoRepository extends AbstractRepository
     protected $guard = ['created_at', 'ip', 'agent', 'user_id'];
 
     /**
-     * @return LoginInfoModel
+     * @return AuthInfoModel
      */
-    public function newModel(): LoginInfoModel
+    public function newModel(): AuthInfoModel
     {
-        return app(LoginInfoModel::class);
+        return app(AuthInfoModel::class);
     }
 }

@@ -71,6 +71,21 @@ class UserAttribute extends AbstractAttributeContract
     const KEY_VERIFY_STATUS = 'verify_status';
 
     /**
+     *
+     */
+    const AUTH_TYPE_LOGIN = 1;
+
+    /**
+     *
+     */
+    const AUTH_TYPE_REGISTER = 2;
+
+    /**
+     *
+     */
+    const KEY_AUTH_TYPE = 'auth_type';
+
+    /**
      * @return array
      */
     protected function attributes(): array
