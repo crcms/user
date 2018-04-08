@@ -10,7 +10,7 @@
 namespace CrCms\User\Services\Verification;
 
 use Carbon\Carbon;
-use CrCms\App\Helpers\Hash\Contracts\HashVerify;
+use CrCms\Foundation\App\Helpers\Hash\Contracts\HashVerify;
 use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Models\UserVerificationModel;
 use CrCms\User\Repositories\UserVerificationRepository;
@@ -122,9 +122,9 @@ class RegisterMailVerification implements Verification
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function url(): array
+    public function url(): string
     {
         $options = [
             'id' => $this->userVerification->id,
