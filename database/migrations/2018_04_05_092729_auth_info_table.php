@@ -20,6 +20,8 @@ class AuthInfoTable extends Migration
             $table->unsignedTinyInteger('type')->default(0)->comment('类型，1:login,2:register');
             $table->string('agent',1024)->nullable()->comment('User Agent');
             $table->string('ext',255)->default('')->comment('附加信息');
+            $table->unsignedInteger('user_id')->default(0)->comment('user id');
+            $table->index('user_id');
         });
     }
 
