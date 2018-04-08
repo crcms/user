@@ -12,6 +12,7 @@ namespace CrCms\User\Listeners;
 use CrCms\User\Events\LoginedEvent;
 use CrCms\User\Repositories\LoginInfoRepository;
 use Illuminate\Http\Request;
+use Jenssegers\Agent\Agent;
 
 /**
  * Class LoginedListener
@@ -30,14 +31,20 @@ class LoginedListener
     protected $request;
 
     /**
+     * @var Agent
+     */
+    protected $agent;
+
+    /**
      * LoginedListener constructor.
      * @param LoginInfoRepository $loginInfoRepository
      * @param Request $request
      */
-    public function __construct(LoginInfoRepository $loginInfoRepository, Request $request)
+    public function __construct(LoginInfoRepository $loginInfoRepository, Request $request, Agent $agent)
     {
         $this->loginInfoRepository = $loginInfoRepository;
         $this->request = $request;
+        $this->agent = $agent;
     }
 
     /**
@@ -46,9 +53,9 @@ class LoginedListener
     public function handle(LoginedEvent $event)
     {
         $this->loginInfoRepository->create([
-           'created_at' => now(),
+            'created_at' => now(),
             'ip' => $this->request->ip(),
-            'agent' => '',
+            'agent' => $this->agent->getUserAgent(),
             'user_id' => $event->user->id,
         ]);
     }

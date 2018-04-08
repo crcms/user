@@ -2,6 +2,8 @@
 
 namespace CrCms\User\Providers;
 
+use CrCms\App\Helpers\Hash\Contracts\HashVerify;
+use CrCms\Foundation\App\Helpers\Hash\Verify;
 use CrCms\Foundation\App\Providers\ModuleServiceProvider;
 use CrCms\User\Events\LoginedEvent;
 use CrCms\User\Listeners\LoginedListener;
@@ -68,5 +70,7 @@ class UserServiceProvider extends ModuleServiceProvider
         );
 
         $this->app->register(LaravelServiceProvider::class);
+
+        $this->app->singleton(HashVerify::class,Verify::class);
     }
 }

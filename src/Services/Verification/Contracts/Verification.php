@@ -24,7 +24,7 @@ interface Verification
      * @throws ValidationException
      * @return bool
      */
-    public function validate(Request $request): bool;
+    public function validate(): bool;
 
     /**
      * @param int $userId
@@ -34,9 +34,8 @@ interface Verification
     public function create(int $userId, int $type): UserVerificationModel;
 
     /**
-     * @param int $verificationId
-     * @param int $status
+     * @param array $data
      * @return UserVerificationModel
      */
-//    public function update(int $verificationId, int $status): UserVerificationModel;
+    public function update(array $data = []): UserVerificationModel;
 }
