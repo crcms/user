@@ -4,7 +4,7 @@ namespace CrCms\User\Mail;
 
 use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Models\UserModel;
-use CrCms\User\Services\Verification\Contracts\Verification;
+use CrCms\User\Services\Verification\RegisterMailVerification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -13,11 +13,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 class RegisterMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
-
-    /**
-     * @var Verification
-     */
-    protected $verification;
 
     /**
      * @var UserModel
@@ -29,10 +24,9 @@ class RegisterMail extends Mailable implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(UserModel $userModel, Verification $verification)
+    public function __construct(UserModel $userModel)
     {
         $this->user = $userModel;
-        $this->verification = $verification;
     }
 
     /**
@@ -42,14 +36,24 @@ class RegisterMail extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        $this->verification->create(
+        $verification = $this->verification();
+
+        $verification->create(
             $this->user->id,
             UserAttribute::VERIFY_MAIL
         );
-        $url = $this->verification->url();
+        $url = $verification->url();
 
         return $this->view('user::emails.register')->with([
             'url' => $url
         ]);
+    }
+
+    /**
+     * @return RegisterMailVerification
+     */
+    protected function verification(): RegisterMailVerification
+    {
+        return app(RegisterMailVerification::class);
     }
 }
