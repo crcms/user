@@ -2,7 +2,7 @@
 
 namespace CrCms\User\Providers;
 
-use CrCms\App\Helpers\Hash\Contracts\HashVerify;
+use CrCms\Foundation\App\Helpers\Hash\Contracts\HashVerify;
 use CrCms\Foundation\App\Helpers\Hash\Verify;
 use CrCms\Foundation\App\Providers\ModuleServiceProvider;
 use CrCms\User\Events\AuthInfoEvent;
@@ -68,8 +68,8 @@ class UserServiceProvider extends ModuleServiceProvider
             $this->basePath . 'config/auth.php', 'auth'
         );
 
-        $this->app->register(LaravelServiceProvider::class);
+        $this->app->bind(HashVerify::class,Verify::class);
 
-        $this->app->singleton(HashVerify::class,Verify::class);
+        $this->app->register(LaravelServiceProvider::class);
     }
 }
