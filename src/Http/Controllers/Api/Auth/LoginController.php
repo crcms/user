@@ -5,7 +5,6 @@ namespace CrCms\User\Http\Controllers\Api\Auth;
 use CrCms\Foundation\App\Http\Controllers\Controller;
 use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Events\AuthInfoEvent;
-use CrCms\User\Events\LoginedEvent;
 use CrCms\User\Models\UserModel;
 use CrCms\User\Repositories\UserRepository;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
