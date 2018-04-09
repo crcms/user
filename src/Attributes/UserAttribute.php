@@ -96,7 +96,7 @@ class UserAttribute extends AbstractAttributeContract
                 static::STATUS_NORMAL => trans('user::lang.status.normal'),
                 static::STATUS_INACTIVATE => trans('user::lang.status.inactivate'),
                 static::STATUS_DISABLE => trans('user::lang.status.disable')
-            ]
+            ],
         ];
     }
 }

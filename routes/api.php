@@ -6,7 +6,7 @@ Route::prefix('api/v1')->middleware(['api'])->group(function () {
     Route::prefix('auth')->middleware([])->namespace('CrCms\User\Http\Controllers\Api\Auth')->group(function(){
         Route::post('register','RegisterController@register');
         Route::post('login','LoginController@login');
-        Route::post('verify-mail','MailVerifyController@verify')->name('register_mail_verify.post');
+        Route::post('verification','UserVerifyController@postVerify')->name('auth_verification.post');
     });
 
     Route::prefix('manage')->namespace('CrCms\User\Http\Controllers\Api\Manage')->group(function(){

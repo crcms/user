@@ -16,9 +16,9 @@ use CrCms\User\Models\UserVerificationModel;
 use CrCms\User\Repositories\UserVerificationRepository;
 use CrCms\User\Services\Verification\Contracts\Verification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Validation\Validator;
 
 /**
  * Class RegisterVerification
@@ -86,7 +86,10 @@ class RegisterMailVerification implements Verification
      */
     public function update(array $data = []): UserVerificationModel
     {
-        $data = array_merge(['status' => UserAttribute::VERIFY_STATUS_SUCCESS], $data);
+        $data = array_merge([
+            'status' => UserAttribute::VERIFY_STATUS_SUCCESS,
+            'ip' => $this->request->ip(),
+        ], $data);
 
         $userVerification = $this->userVerificationRepository->update($data, $this->userVerification->id);
 
@@ -128,6 +131,7 @@ class RegisterMailVerification implements Verification
     {
         $options = [
             'id' => $this->userVerification->id,
+            'type' => $this->userVerification->type,
             'sign' => Str::random(10),
             'time' => $this->userVerification->created_at->getTimestamp(),
         ];
@@ -136,7 +140,7 @@ class RegisterMailVerification implements Verification
 
         $options = array_merge($options, ['hash' => $hash]);
 
-        return route('register_mail_verify.post', $options);
+        return route('auth_verification.post', $options);
     }
 
     /**
@@ -162,12 +166,13 @@ class RegisterMailVerification implements Verification
      * @param array $data
      * @return Validator
      */
-    protected function validator(array $data): Validator
+    protected function validator(array $data): \Illuminate\Validation\Validator
     {
         return Validator::make($data, [
             'hash' => 'required|string',
             'id' => 'required|integer',
             'time' => 'required|integer',
+            'type' => 'required|integer',
             'sign' => 'required',
         ]);
     }
@@ -195,6 +200,7 @@ class RegisterMailVerification implements Verification
     {
         if (!$this->hashVerify->check([
             'id' => $this->userVerification->id,
+            'type' => $this->userVerification->type,
             'sign' => $this->request->input('sign'),
             'time' => $this->userVerification->created_at->getTimestamp(),
         ], $this->request->input('hash'))) {
@@ -244,7 +250,8 @@ class RegisterMailVerification implements Verification
     protected function setErrorUpdate(): UserVerificationModel
     {
         return $this->userVerificationRepository->update([
-            'status' => UserAttribute::VERIFY_STATUS_ERROR
+            'status' => UserAttribute::VERIFY_STATUS_ERROR,
+            'ip' => $this->request->ip(),
         ], $this->userVerification->id);
     }
 }
