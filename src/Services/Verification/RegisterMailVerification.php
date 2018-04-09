@@ -71,11 +71,11 @@ class RegisterMailVerification implements Verification
             $this->userVerification($this->request->input('id'))
         );
 
+        $this->checkVerified();
+
         $this->checkHash();
 
         $this->checkTime();
-
-        $this->checkVerified();
 
         return true;
     }
@@ -150,7 +150,7 @@ class RegisterMailVerification implements Verification
 
     /**
      * @param UserVerificationModel $userVerification
-     * @return Register
+     * @return RegisterMailVerification
      */
     protected function setUserVerification(UserVerificationModel $userVerification): self
     {
@@ -178,7 +178,7 @@ class RegisterMailVerification implements Verification
      */
     protected function checkVerified(): bool
     {
-        if ($this->userVerification->status === UserAttribute::VERIFY_STATUS_SUCCESS) {
+        if ($this->userVerification->status !== UserAttribute::VERIFY_STATUS_NO) {
             $this->throwError([
                 'id' => [trans('user::verify_mail.verified')],
             ]);
@@ -199,6 +199,8 @@ class RegisterMailVerification implements Verification
             'time' => $this->userVerification->created_at->getTimestamp(),
         ], $this->request->input('hash'))) {
 
+            $this->setErrorUpdate();
+
             $this->throwError([
                 'hash' => [trans('user::verify_mail.hash_error')],
             ]);
@@ -216,6 +218,8 @@ class RegisterMailVerification implements Verification
         if (
             Carbon::now()->diffInMinutes($this->userVerification->created_at) > config('user.register_mail_time_interval', 10)
         ) {
+            $this->setErrorUpdate();
+
             $this->throwError([
                 'id' => [trans('user::verify_mail.time_error')],
             ]);
@@ -232,5 +236,15 @@ class RegisterMailVerification implements Verification
     protected function throwError(array $errors): void
     {
         throw ValidationException::withMessages($errors)->status(423);
+    }
+
+    /**
+     * @return UserVerificationModel
+     */
+    protected function setErrorUpdate(): UserVerificationModel
+    {
+        return $this->userVerificationRepository->update([
+            'status' => UserAttribute::VERIFY_STATUS_ERROR
+        ], $this->userVerification->id);
     }
 }
