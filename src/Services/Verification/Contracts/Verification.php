@@ -29,9 +29,10 @@ interface Verification
     /**
      * @param int $userId
      * @param int $type
+     * @param null|string $ext
      * @return UserVerificationModel
      */
-    public function create(int $userId, int $type): UserVerificationModel;
+    public function create(int $userId, int $type, ?string $ext): UserVerificationModel;
 
     /**
      * @param array $data

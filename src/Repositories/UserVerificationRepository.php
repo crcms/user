@@ -23,7 +23,7 @@ class UserVerificationRepository extends AbstractRepository
     /**
      * @var array
      */
-    protected $guard = ['user_id', 'type', 'status'];
+    protected $guard = ['user_id', 'type', 'status', 'ext'];
 
     /**
      * @return UserVerificationModel
@@ -39,6 +39,6 @@ class UserVerificationRepository extends AbstractRepository
      */
     public function isVerifyMail(int $userId): bool
     {
-        return (bool)$this->where('user_id',$userId)->where('status',UserAttribute::VERIFY_STATUS_SUCCESS)->first();
+        return (bool)$this->where('user_id', $userId)->where('status', UserAttribute::VERIFY_STATUS_SUCCESS)->first();
     }
 }
