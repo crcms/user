@@ -185,7 +185,7 @@ class RegisterMailVerification implements Verification
     {
         if ($this->userVerification->status !== UserAttribute::VERIFY_STATUS_NO) {
             $this->throwError([
-                'id' => [trans('user::verify_mail.verified')],
+                'id' => [trans('user::app.verify_mail.verified')],
             ]);
         }
 
@@ -208,7 +208,7 @@ class RegisterMailVerification implements Verification
             $this->setErrorUpdate();
 
             $this->throwError([
-                'hash' => [trans('user::verify_mail.hash_error')],
+                'hash' => [trans('user::app.verify_mail.hash_error')],
             ]);
         }
 
@@ -227,7 +227,7 @@ class RegisterMailVerification implements Verification
             $this->setErrorUpdate();
 
             $this->throwError([
-                'id' => [trans('user::verify_mail.time_error')],
+                'id' => [trans('user::app.verify_mail.timeout')],
             ]);
         }
 

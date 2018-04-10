@@ -32,7 +32,7 @@ class Verification
             case UserAttribute::VERIFY_TEL:
                 break;
             default:
-                throw new InvalidArgumentException('Param Type Error');
+                throw new InvalidArgumentException(trans('user::app.param_error'));
         }
     }
 
