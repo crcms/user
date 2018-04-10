@@ -4,6 +4,7 @@
 	"keywords": ["user", "crcms","laravel","php"],
 	"homepage": "https://github.com/crcms/user",
     "license": "MIT",
+    "type": "crcms-module",
     "require": {
         "php":">=7.1",
         "tymon/jwt-auth": "1.0.0-rc.2"
