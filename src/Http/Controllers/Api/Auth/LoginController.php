@@ -41,9 +41,10 @@ class LoginController extends Controller
      */
     public function __construct(UserRepository $userRepository)
     {
+        $this->middleware('guest')->except('logout');
+
         parent::__construct();
         $this->repository = $userRepository;
-        //$this->middleware('guest')->except('logout');
     }
 
     /**
