@@ -9,6 +9,8 @@
 
 namespace CrCms\User\Models;
 
+use CrCms\User\Attributes\UserAttribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -20,7 +22,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class UserModel extends Authenticatable implements JWTSubject
 {
-    use SoftDeletes,Notifiable;
+    use SoftDeletes, Notifiable;
 
     /**
      * @var string
@@ -85,4 +87,12 @@ class UserModel extends Authenticatable implements JWTSubject
 //    {
 //        return $this->hasOne(UserVerificationModel::class,'user_id','id')->order
 //    }
+
+
+    public function hasManyAuthInfo(): HasMany
+    {
+        return $this->hasMany(AuthInfoModel::class, 'user_id', 'id');
+    }
+
+
 }

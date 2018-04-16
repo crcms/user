@@ -38,7 +38,6 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $paginate = $this->repository->magic(new UserMagic($request->all()))->paginate();
-
         return $this->response->paginator($paginate,UserResource::class);
     }
 }

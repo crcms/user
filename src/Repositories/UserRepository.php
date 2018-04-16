@@ -10,7 +10,10 @@
 namespace CrCms\User\Repositories;
 
 use CrCms\Foundation\App\Repositories\AbstractRepository;
+use CrCms\User\Attributes\UserAttribute;
+use CrCms\User\Models\AuthInfoModel;
 use CrCms\User\Models\UserModel;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -45,5 +48,25 @@ class UserRepository extends AbstractRepository
             'token_type' => 'bearer',
             'expires_in' => Auth::guard()->factory()->getTTL() * 60
         ];
+    }
+
+    /**
+     * @param UserModel $userModel
+     * @return \Illuminate\Database\Eloquent\Model|null|object|static
+     */
+    public function getRegisterInfo(UserModel $userModel)
+    {
+        return $userModel->hasManyAuthInfo()
+            ->where('type', UserAttribute::AUTH_TYPE_REGISTER)->first();
+    }
+
+    /**
+     * @param UserModel $userModel
+     * @return Collection
+     */
+    public function getLoginInfo(UserModel $userModel): Collection
+    {
+        return $userModel->hasManyAuthInfo()
+            ->where('type', UserAttribute::AUTH_TYPE_LOGIN)->orderBy('created_at', 'desc')->get();
     }
 }

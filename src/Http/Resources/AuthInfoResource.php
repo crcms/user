@@ -11,33 +11,41 @@ namespace CrCms\User\Http\Resources;
 
 use CrCms\Foundation\App\Http\Resources\Resource;
 use CrCms\User\Attributes\UserAttribute;
+use CrCms\User\Models\AuthInfoModel;
 use CrCms\User\Models\UserVerificationModel;
 
 /**
- * Class UserVerificationResource
+ * Class AuthInfoResource
  * @package CrCms\User\Http\Resources
  */
-class UserVerificationResource extends Resource
+class AuthInfoResource extends Resource
 {
-
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return array
+     */
     public function toArray($request)
     {
         return [
-            'type' => UserAttribute::getStaticTransform(UserAttribute::KEY_AUTH_TYPE.'.'.$this->type),
-
+            'id' => $this->id,
+            'type' => $this->type,
+            'type_convert' => UserAttribute::getStaticTransform(UserAttribute::KEY_AUTH_TYPE . '.' . strval($this->type)),
+            'ip' => $this->ip,
+            'created_at' => $this->created_at->toDateTimeString(),
+            'agent' => $this->agent,
         ];
     }
 
     /**
-     * @param UserVerificationModel $userVerificationModel
+     * @param AuthInfoModel $authInfoModel
      * @return array
      */
-    protected function includeUser(UserVerificationModel $userVerificationModel)
+    protected function includeUser(AuthInfoModel $authInfoModel)
     {
         return [
-            'name' => $userVerificationModel->hasOneUser->name,
-            'email' => $userVerificationModel->hasOneUser->email,
-            'tel' => $userVerificationModel->hasOneUser->tel,
+            'name' => $authInfoModel->hasOneUser->name,
+            'email' => $authInfoModel->hasOneUser->email,
+            'tel' => $authInfoModel->hasOneUser->tel,
         ];
     }
 }
