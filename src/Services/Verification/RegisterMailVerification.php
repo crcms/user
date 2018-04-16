@@ -104,12 +104,13 @@ class RegisterMailVerification implements Verification
      * @param null|string $ext
      * @return UserVerificationModel
      */
-    public function create(int $userId, int $type, ?string $ext): UserVerificationModel
+    public function create(int $userId, int $type, ?string $ext = null): UserVerificationModel
     {
         $userVerification = $this->userVerificationRepository->create([
             'user_id' => $userId,
             'type' => $type,
             'status' => UserAttribute::VERIFY_STATUS_NO,
+            'ext' => strval($ext)
         ]);
 
         $this->setUserVerification($userVerification);
