@@ -21,7 +21,7 @@ class AuthInfoRepository extends AbstractRepository
     /**
      * @var array
      */
-    protected $guard = ['created_at', 'ip', 'agent', 'user_id'];
+    protected $guard = ['created_at', 'ip', 'agent', 'user_id', 'type'];
 
     /**
      * @return AuthInfoModel
