@@ -10,6 +10,7 @@
 namespace CrCms\User\Models;
 
 use CrCms\Foundation\App\Models\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Class LoginInfoModel
@@ -31,4 +32,12 @@ class AuthInfoModel extends Model
      * @var string
      */
     protected $table = 'auth_info';
+
+    /**
+     * @return HasOne
+     */
+    public function hasOneUser(): HasOne
+    {
+        return $this->hasOne(UserModel::class,'id','user_id');
+    }
 }
