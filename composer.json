@@ -1,7 +1,7 @@
 {
     "name": "crcms/user",
     "description": "crcms user module",
-	"keywords": ["user", "crcms","laravel","php"],
+	"keywords": ["user", "crcms", "laravel", "php"],
 	"homepage": "https://github.com/crcms/user",
     "license": "MIT",
     "type": "crcms-module",
@@ -24,6 +24,7 @@
     "extra": {
         "laravel": {
             "providers": [
+                "CrCms\\User\\Providers\\UserServiceProvider"
             ],
             "aliases": {
             },
