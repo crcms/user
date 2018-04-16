@@ -70,6 +70,9 @@ class UserServiceProvider extends ModuleServiceProvider
 
         $this->app->bind(HashVerify::class,Verify::class);
 
+        $this->app->register(\Illuminate\Auth\AuthServiceProvider::class);
+        $this->app->register(\Illuminate\Auth\Passwords\PasswordResetServiceProvider::class);
         $this->app->register(LaravelServiceProvider::class);
+
     }
 }
