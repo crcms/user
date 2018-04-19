@@ -32,7 +32,7 @@ interface Verification
      * @param null|string $ext
      * @return UserVerificationModel
      */
-    public function create(int $userId, int $type, ?string $ext): UserVerificationModel;
+    public function create(int $userId, int $type, ?string $ext = null): UserVerificationModel;
 
     /**
      * @param array $data

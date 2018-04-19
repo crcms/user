@@ -2,56 +2,53 @@
 
 namespace CrCms\User\Services\Verification;
 
-use CrCms\Foundation\App\Helpers\Hash\Contracts\HashVerify;
 use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Models\UserVerificationModel;
-use CrCms\User\Repositories\UserVerificationRepository;
-use CrCms\User\Services\Verification\Contracts\Verification;
-use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
-class ResetPasswordVerification implements Verification
+class ResetPasswordVerification extends AbstractVerification
 {
-
-    /**
-     * @var UserVerificationRepository
-     */
-    protected $userVerificationRepository;
-
-    /**
-     * @var HashVerify
-     */
-    protected $hashVerify;
-
-    /**
-     * @var UserVerificationModel
-     */
-    protected $userVerification;
-
-    /**
-     * @var Request
-     */
-    protected $request;
-
-    /**
-     * Register constructor.
-     * @param Request $request
-     * @param HashVerify $hashVerify
-     * @param UserVerificationRepository $userVerificationRepository
-     */
-    public function __construct(Request $request, HashVerify $hashVerify, UserVerificationRepository $userVerificationRepository)
-    {
-        $this->request = $request;
-        $this->hashVerify = $hashVerify;
-        $this->userVerificationRepository = $userVerificationRepository;
-    }
 
     public function validate(): bool
     {
+        $userVerification = $this->userVerification($this->request->input('id'));
 
+        $this->setUserVerification($userVerification);
+
+        if ($this->checkExpired()) {
+            $this->setErrorUpdate();
+            $this->throwError([
+                'id' => [trans('user::app.verify_mail.timeout')],
+            ]);
+        }
+
+        if ($this->checkCode()) {
+            $this->setErrorUpdate();
+
+            $this->throwError([
+                'id' => [trans('user::app.verify_mail.timeout')],
+            ]);
+        }
     }
 
-    public function create(int $userId, int $type, ?string $ext): UserVerificationModel
+    /**
+     * @return bool
+     */
+    protected function checkCode(): bool
+    {
+        return $this->userVerification->ext !== $this->request->input('code');
+    }
+
+    protected function validator(array $data): \Illuminate\Validation\Validator
+    {
+    }
+
+    /**
+     * @param int $userId
+     * @param int $type
+     * @param null|string $ext
+     * @return UserVerificationModel
+     */
+    public function create(int $userId, int $type, ?string $ext = null): UserVerificationModel
     {
         $userVerification = $this->userVerificationRepository->create([
             'user_id' => $userId,
@@ -63,12 +60,6 @@ class ResetPasswordVerification implements Verification
         $this->setUserVerification($userVerification);
 
         return $userVerification;
-    }
-
-
-    public function update(array $data = []): UserVerificationModel
-    {
-
     }
 
     /**
