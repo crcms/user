@@ -2,14 +2,13 @@
 
 namespace CrCms\User\Providers;
 
-use CrCms\Foundation\App\Helpers\Hash\Contracts\HashVerify;
-use CrCms\Foundation\App\Helpers\Hash\Verify;
 use CrCms\Foundation\App\Providers\ModuleServiceProvider;
 use CrCms\User\Events\AuthInfoEvent;
 use CrCms\User\Listeners\AuthInfoListener;
 use CrCms\User\Listeners\RegisterMailListener;
 use CrCms\User\Listeners\Repositories\UserListener;
 use CrCms\User\Repositories\UserRepository;
+use CrCms\User\Services\Passwords\PasswordBrokerManager;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
 use Tymon\JWTAuth\Providers\LaravelServiceProvider;
@@ -51,10 +50,10 @@ class UserServiceProvider extends ModuleServiceProvider
             $this->basePath . 'resources/lang' => resource_path("lang/vendor/{$this->name}"),
         ]);
 
-        $this->loadViewsFrom($this->basePath.'/resources/views', $this->name);
+        $this->loadViewsFrom($this->basePath . '/resources/views', $this->name);
 
-        Event::listen(Registered::class,RegisterMailListener::class);
-        Event::listen(AuthInfoEvent::class,AuthInfoListener::class);
+        Event::listen(Registered::class, RegisterMailListener::class);
+        Event::listen(AuthInfoEvent::class, AuthInfoListener::class);
     }
 
     /**
@@ -68,11 +67,16 @@ class UserServiceProvider extends ModuleServiceProvider
             $this->basePath . 'config/auth.php', 'auth'
         );
 
-        $this->app->bind(HashVerify::class,Verify::class);
+        $this->app->singleton(\CrCms\User\Services\Verification\Contracts\VerificationCode::class,
+            \CrCms\User\Services\Verification\VerificationCode::class);
 
         $this->app->register(\Illuminate\Auth\AuthServiceProvider::class);
         $this->app->register(\Illuminate\Auth\Passwords\PasswordResetServiceProvider::class);
-        $this->app->register(LaravelServiceProvider::class);
 
+        $this->app->singleton('auth.password', function ($app) {
+            return new PasswordBrokerManager($app);
+        });
+
+        $this->app->register(LaravelServiceProvider::class);
     }
 }

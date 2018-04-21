@@ -41,4 +41,18 @@ class UserVerificationRepository extends AbstractRepository
     {
         return (bool)$this->where('user_id', $userId)->where('status', UserAttribute::VERIFY_STATUS_SUCCESS)->first();
     }
+
+    /**
+     * @param int $userId
+     * @param string $code
+     * @return UserVerificationModel
+     */
+    public function notVerifyByUserIdAndExt(int $userId, string $code): UserVerificationModel
+    {
+        return $this->where('user_id', $userId)
+            ->where('ext', $code)
+            ->where('status', UserAttribute::VERIFY_STATUS_NO)
+            ->orderBy('created_at', 'desc')
+            ->firstOrFail();
+    }
 }

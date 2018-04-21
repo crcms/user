@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'verification_expired' => 10,
+    'verification_expire' => 10,
 ];

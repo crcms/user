@@ -6,7 +6,6 @@ use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Models\UserVerificationModel;
 use CrCms\User\Services\Verification\Contracts\Verification;
 use Illuminate\Http\Request;
-use CrCms\Foundation\App\Helpers\Hash\Contracts\HashVerify;
 use CrCms\User\Repositories\UserVerificationRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -17,11 +16,6 @@ abstract class AbstractVerification implements Verification
      * @var UserVerificationRepository
      */
     protected $userVerificationRepository;
-
-    /**
-     * @var HashVerify
-     */
-    protected $hashVerify;
 
     /**
      * @var UserVerificationModel
@@ -36,13 +30,11 @@ abstract class AbstractVerification implements Verification
     /**
      * Register constructor.
      * @param Request $request
-     * @param HashVerify $hashVerify
      * @param UserVerificationRepository $userVerificationRepository
      */
-    public function __construct(Request $request, HashVerify $hashVerify, UserVerificationRepository $userVerificationRepository)
+    public function __construct(Request $request, UserVerificationRepository $userVerificationRepository)
     {
         $this->request = $request;
-        $this->hashVerify = $hashVerify;
         $this->userVerificationRepository = $userVerificationRepository;
     }
 
@@ -94,17 +86,18 @@ abstract class AbstractVerification implements Verification
     }
 
     /**
-     * @param int $id
+     * @param int $userId
+     * @param string $code
      * @return UserVerificationModel
      */
-    protected function userVerification(int $id): UserVerificationModel
+    protected function userVerification(int $userId, string $code): UserVerificationModel
     {
-        return $this->userVerificationRepository->byIntIdOrFail($id);
+        return $this->userVerificationRepository->notVerifyByUserIdAndExt($userId, $code);
     }
 
     /**
      * @param UserVerificationModel $userVerification
-     * @return RegisterMailVerification
+     * @return AbstractVerification
      */
     protected function setUserVerification(UserVerificationModel $userVerification): self
     {
@@ -134,5 +127,5 @@ abstract class AbstractVerification implements Verification
      * @param array $data
      * @return Validator
      */
-    abstract protected function validator(array $data): \Illuminate\Validation\Validator;
+//    abstract protected function validator(array $data): \Illuminate\Validation\Validator;
 }

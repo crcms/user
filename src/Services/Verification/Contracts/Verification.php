@@ -39,4 +39,11 @@ interface Verification
      * @return UserVerificationModel
      */
     public function update(array $data = []): UserVerificationModel;
+
+    /**
+     * @param int $userId
+     * @param string $code
+     * @return UserVerificationModel
+     */
+//    public function userVerification(int $userId, string $code): UserVerificationModel;
 }

@@ -10,6 +10,9 @@
 namespace CrCms\User\Models;
 
 use CrCms\User\Attributes\UserAttribute;
+use CrCms\User\Services\Notifications\ResetPasswordNotification;
+use CrCms\User\Services\Verification\Contracts\Verification;
+use CrCms\User\Services\Verification\ResetPasswordVerification;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -94,5 +97,8 @@ class UserModel extends Authenticatable implements JWTSubject
         return $this->hasMany(AuthInfoModel::class, 'user_id', 'id');
     }
 
-
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
 }
