@@ -3,10 +3,8 @@
 namespace CrCms\User\Http\Controllers\Api\Auth;
 
 use CrCms\Foundation\App\Http\Controllers\Controller;
-use CrCms\User\Services\Verification\Contracts\Verification;
-use CrCms\User\Services\Verification\Contracts\VerificationCode;
+use CrCms\User\Http\Requests\Auth\ResetPasswordUrlRequest;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
-use Illuminate\Http\Request;
 
 class ForgotPasswordController extends Controller
 {
@@ -24,19 +22,22 @@ class ForgotPasswordController extends Controller
     use SendsPasswordResetEmails;
 
     /**
-     * ForgotPasswordController constructor.
-     * @param Verification $verification
-     * @param VerificationCode $verificationCode
+     * @param $response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function __construct()
+    public function sendResetLinkResponse($response)
     {
-        parent::__construct();
-//        $this->middleware('guest');
+        return $this->response->noContent();
     }
-//
-//    public function sendResetLinkEmail(Request $request)
-//    {
-//        echo 122;
-//        dd(123);
-//    }
+
+    /**
+     * @param ResetPasswordUrlRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function postResetPasswordUrl(ResetPasswordUrlRequest $request)
+    {
+        return $this->response->data([
+            'url' => route('user.auth.reset_password.reset', $request->all())
+        ]);
+    }
 }

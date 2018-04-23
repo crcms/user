@@ -20,11 +20,11 @@ use Illuminate\Validation\ValidationException;
 interface Verification
 {
     /**
-     * @param Request $request
-     * @throws ValidationException
+     * @param int $userId
+     * @param string $token
      * @return bool
      */
-    public function validate(): bool;
+    public function validate(int $userId, string $token): bool;
 
     /**
      * @param int $userId

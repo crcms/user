@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Hashing\Hasher as HasherContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Exception;
 
 class DatabaseTokenRepository implements TokenRepositoryInterface
 {
@@ -104,24 +105,11 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
      */
     public function exists(CanResetPasswordContract $user, $token)
     {
-        $record = (array)$this->getTable()->where(
-            'email', $user->getEmailForPasswordReset()
-        )->first();
-
-        return $record &&
-            !$this->tokenExpired($record['created_at']) &&
-            $this->hasher->check($token, $record['token']);
-    }
-
-    /**
-     * Determine if the token has expired.
-     *
-     * @param  string $createdAt
-     * @return bool
-     */
-    protected function tokenExpired($createdAt)
-    {
-        return Carbon::parse($createdAt)->addSeconds($this->expires)->isPast();
+        try {
+            return $this->verification->validate($user->id, $token);
+        } catch (Exception $exception) {
+            return false;
+        }
     }
 
     /**
@@ -132,7 +120,6 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
      */
     public function delete(CanResetPasswordContract $user)
     {
-        $this->deleteExisting($user);
     }
 
     /**
@@ -142,9 +129,6 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
      */
     public function deleteExpired()
     {
-        $expiredAt = Carbon::now()->subSeconds($this->expires);
-
-        $this->getTable()->where('created_at', '<', $expiredAt)->delete();
     }
 
     /**
@@ -154,7 +138,6 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
      */
     public function createNewToken()
     {
-        return hash_hmac('sha256', Str::random(40), $this->hashKey);
     }
 
     /**
@@ -175,15 +158,5 @@ class DatabaseTokenRepository implements TokenRepositoryInterface
     protected function getTable()
     {
         return $this->connection->table($this->table);
-    }
-
-    /**
-     * Get the hasher instance.
-     *
-     * @return \Illuminate\Contracts\Hashing\Hasher
-     */
-    public function getHasher()
-    {
-        return $this->hasher;
     }
 }

@@ -11,15 +11,14 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 class ResetPasswordVerification extends AbstractVerification implements VerificationContract
 {
     /**
+     * @param int $userId
+     * @param string $token
      * @return bool
      */
-    public function validate(): bool
+    public function validate(int $userId, string $token): bool
     {
         try {
-            $userVerification = $this->userVerification(
-                $this->request->input('user_id'),
-                $this->request->input('code')
-            );
+            $userVerification = $this->userVerification($userId, $token);
         } catch (ResourceNotFoundException $exception) {
             $this->setErrorUpdate();
             $this->throwVerifyError();

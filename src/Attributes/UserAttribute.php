@@ -81,6 +81,11 @@ class UserAttribute extends AbstractAttributeContract
     const AUTH_TYPE_REGISTER = 2;
 
     /**
+     * 认证类型 - 重置密码
+     */
+    const AUTH_TYPE_RESET_PASSWORD = 3;
+
+    /**
      * 认证类型
      */
     const KEY_AUTH_TYPE = 'auth_type';

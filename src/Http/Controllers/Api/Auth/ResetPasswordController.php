@@ -1,9 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace CrCms\User\Http\Controllers\Api\Auth;
 
 use CrCms\Foundation\App\Http\Controllers\Controller;
+use CrCms\User\Attributes\UserAttribute;
+use CrCms\User\Events\AuthInfoEvent;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class ResetPasswordController extends Controller
 {
@@ -34,6 +40,42 @@ class ResetPasswordController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+//        $this->middleware('guest');
+    }
+
+    /**
+     * @param $user
+     * @param $password
+     */
+    public function resetPassword($user, $password)
+    {
+        $user->password = Hash::make($password);
+
+        //$user->setRememberToken(Str::random(60));
+
+        $user->save();
+
+        event(new PasswordReset($user));
+        event(new AuthInfoEvent($user, UserAttribute::AUTH_TYPE_RESET_PASSWORD));
+
+        //$this->guard()->login($user);
+    }
+
+    /**
+     * @param $response
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function sendResetResponse($response)
+    {
+        return $this->response->noContent();
+    }
+
+    /**
+     * @param Request $request
+     * @param $response
+     */
+    protected function sendResetFailedResponse(Request $request, $response)
+    {
+        throw new UnprocessableEntityHttpException(trans($response));
     }
 }
