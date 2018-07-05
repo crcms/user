@@ -75,7 +75,7 @@ class RegisterController extends Controller
     protected function registered(Request $request, UserModel $user)
     {
         //save login info
-        event(new AuthInfoEvent($user, UserAttribute::AUTH_TYPE_REGISTER));
+        //event(new AuthInfoEvent($user, UserAttribute::AUTH_TYPE_REGISTER));
 
         return $this->response->array([
             'data' => $this->repository->getTokenInfoByUser($user)

@@ -6,7 +6,11 @@ use CrCms\Foundation\App\Providers\ModuleServiceProvider;
 use CrCms\User\Events\AuthInfoEvent;
 use CrCms\User\Listeners\AuthInfoListener;
 use CrCms\User\Listeners\RegisterMailListener;
+use CrCms\User\Listeners\Repositories\AuthLogListener;
+use CrCms\User\Listeners\Repositories\UserBehaviorListener;
 use CrCms\User\Listeners\Repositories\UserListener;
+use CrCms\User\Repositories\AuthLogRepository;
+use CrCms\User\Repositories\UserBehaviorRepository;
 use CrCms\User\Repositories\UserRepository;
 use CrCms\User\Services\Passwords\PasswordBrokerManager;
 use Illuminate\Auth\Events\Registered;
@@ -35,6 +39,8 @@ class UserServiceProvider extends ModuleServiceProvider
     protected function repositoryListener(): void
     {
         UserRepository::observer(UserListener::class);
+        AuthLogRepository::observer(AuthLogListener::class);
+        UserBehaviorRepository::observer(UserBehaviorListener::class);
     }
 
     /**

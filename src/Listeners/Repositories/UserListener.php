@@ -23,7 +23,7 @@ class UserListener
      * @param UserRepository $userRepository
      * @param array $data
      */
-    public function creating(UserRepository $userRepository,array $data)
+    public function creating(UserRepository $userRepository, array $data)
     {
         $userRepository->addData([
             'password' => Hash::make($data['password']),

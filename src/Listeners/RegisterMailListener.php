@@ -10,8 +10,12 @@
 namespace CrCms\User\Listeners;
 
 use CrCms\User\Mail\RegisterMail;
+use CrCms\User\Repositories\AuthLogRepository;
+use CrCms\User\Repositories\UserBehaviorRepository;
+use CrCms\User\Services\Behaviors\RegisterMailBehavior;
 use CrCms\User\Services\Verification\RegisterMailVerification;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 /**
@@ -20,28 +24,19 @@ use Illuminate\Support\Facades\Mail;
  */
 class RegisterMailListener
 {
-    /**
-     * @var RegisterMailVerification
-     */
-    protected $registerVerification;
 
-    /**
-     * RegisterListener constructor.
-     * @param RegisterMailVerification $registerVerification
-     */
-    public function __construct(RegisterMailVerification $registerVerification)
+    protected $request;
+
+    public function __construct(Request $request)
     {
-        $this->registerVerification = $registerVerification;
+        $this->request = $request;
     }
 
-    /**
-     * @param Registered $registered
-     */
     public function handle(Registered $registered)
     {
         Mail::to($registered->user->email)
             ->queue(
-                (new RegisterMail($registered->user, $this->registerVerification))
+                (new RegisterMail($registered->user,$this->request->all()))
                     ->onQueue('emails')
             );
     }

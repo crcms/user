@@ -63,7 +63,7 @@ class RegisterMailVerification implements Verification
      * @return bool
      * @throws ValidationException
      */
-    public function validate(): bool
+    public function validate(int $userId, string $token): bool
     {
         $this->validator($this->request->all())->validate();
 
