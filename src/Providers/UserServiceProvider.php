@@ -4,7 +4,10 @@ namespace CrCms\User\Providers;
 
 use CrCms\Foundation\App\Providers\ModuleServiceProvider;
 use CrCms\User\Events\AuthInfoEvent;
+use CrCms\User\Events\BehaviorCreatedEvent;
+use CrCms\User\Events\RegisteredEvent;
 use CrCms\User\Listeners\AuthInfoListener;
+use CrCms\User\Listeners\BehaviorCreatedListener;
 use CrCms\User\Listeners\RegisterMailListener;
 use CrCms\User\Listeners\Repositories\AuthLogListener;
 use CrCms\User\Listeners\Repositories\UserBehaviorListener;
@@ -13,7 +16,6 @@ use CrCms\User\Repositories\AuthLogRepository;
 use CrCms\User\Repositories\UserBehaviorRepository;
 use CrCms\User\Repositories\UserRepository;
 use CrCms\User\Services\Passwords\PasswordBrokerManager;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
 use Tymon\JWTAuth\Providers\LaravelServiceProvider;
 
@@ -39,7 +41,6 @@ class UserServiceProvider extends ModuleServiceProvider
     protected function repositoryListener(): void
     {
         UserRepository::observer(UserListener::class);
-        AuthLogRepository::observer(AuthLogListener::class);
         UserBehaviorRepository::observer(UserBehaviorListener::class);
     }
 
@@ -58,8 +59,9 @@ class UserServiceProvider extends ModuleServiceProvider
 
         $this->loadViewsFrom($this->basePath . '/resources/views', $this->name);
 
-        Event::listen(Registered::class, RegisterMailListener::class);
-        Event::listen(AuthInfoEvent::class, AuthInfoListener::class);
+        Event::listen(RegisteredEvent::class, RegisterMailListener::class);
+        Event::listen(RegisteredEvent::class, BehaviorCreatedListener::class);
+        Event::listen(BehaviorCreatedEvent::class, BehaviorCreatedListener::class);
     }
 
     /**

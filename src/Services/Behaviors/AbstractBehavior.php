@@ -9,14 +9,18 @@
 
 namespace CrCms\User\Services\Behaviors;
 
+use CrCms\User\Attributes\UserAttribute;
+use CrCms\User\Models\UserBehaviorModel;
+use CrCms\User\Models\UserModel;
 use CrCms\User\Repositories\UserBehaviorRepository;
 use CrCms\User\Services\Behaviors\Contracts\BehaviorContract;
+use Illuminate\Http\Request;
 
 /**
  * Class AbstractBehavior
  * @package CrCms\User\Services\Behaviors
  */
-abstract class AbstractBehavior implements BehaviorContract
+abstract class AbstractBehavior
 {
     /**
      * @var UserBehaviorRepository
@@ -24,11 +28,75 @@ abstract class AbstractBehavior implements BehaviorContract
     protected $userBehaviorRepository;
 
     /**
-     * AbstractRegister constructor.
-     * @param UserBehaviorRepository $userBehaviorRepository
+     * @var
      */
-    public function __construct(UserBehaviorRepository $userBehaviorRepository)
+    protected $userBehavior;
+
+    /**
+     * @var UserModel
+     */
+    protected $user;
+
+    /**
+     * @var Request|null
+     */
+    protected $request;
+
+    /**
+     * @var array
+     */
+    protected $data = [];
+
+    /**
+     * AbstractBehavior constructor.
+     * @param UserModel $userModel
+     * @param Request|null $request
+     * @param array $data
+     */
+    public function __construct(UserModel $userModel, ?Request $request = null, array $data = [])
     {
-        $this->userBehaviorRepository = $userBehaviorRepository;
+        $this->user = $userModel;
+        $this->request = $request;
+        $this->data = $data;
+    }
+
+    /**
+     * @return UserBehaviorModel
+     */
+    public function getUserBehavior(): UserBehaviorModel
+    {
+        return $this->userBehavior;
+    }
+
+    /**
+     * @param UserBehaviorModel $userBehaviorModel
+     */
+    protected function setUserBehavior(UserBehaviorModel $userBehaviorModel)
+    {
+        $this->userBehavior = $userBehaviorModel;
+    }
+
+    /**
+     * @return UserBehaviorRepository
+     */
+    protected function userBehaviorRepository(): UserBehaviorRepository
+    {
+        if (!$this->userBehaviorRepository instanceof UserBehaviorRepository) {
+            $this->userBehaviorRepository = app(UserBehaviorRepository::class);
+        }
+
+        return $this->userBehaviorRepository;
+    }
+
+    /**
+     * @param int $id
+     * @param array $data
+     * @return UserBehaviorModel
+     */
+    protected function update(int $id, array $data = []): UserBehaviorModel
+    {
+        return $this->userBehaviorRepository()->update([
+            'status' => UserAttribute::AUTH_STATUS_SUCCESS
+        ], $id);
     }
 }

@@ -5,8 +5,10 @@ namespace CrCms\User\Http\Controllers\Api\Auth;
 use CrCms\Foundation\App\Http\Controllers\Controller;
 use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Events\AuthInfoEvent;
+use CrCms\User\Events\BehaviorCreatedEvent;
 use CrCms\User\Models\UserModel;
 use CrCms\User\Repositories\UserRepository;
+use CrCms\User\Services\Behaviors\LoginBehavior;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
@@ -41,7 +43,7 @@ class LoginController extends Controller
      */
     public function __construct(UserRepository $userRepository)
     {
-        $this->middleware('guest')->except('logout');
+        //$this->middleware('guest')->except('logout');
 
         parent::__construct();
         $this->repository = $userRepository;
@@ -54,7 +56,11 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, UserModel $user)
     {
-        event(new AuthInfoEvent($user, UserAttribute::AUTH_TYPE_LOGIN));
+        event(new BehaviorCreatedEvent(
+            $user,
+            UserAttribute::AUTH_TYPE_LOGIN,
+            ['ip' => $request->ip(), 'agent' => $request->userAgent()]
+        ));
 
         return $this->response->array([
             'data' => $this->repository->getTokenInfoByUser($user)
@@ -95,7 +101,7 @@ class LoginController extends Controller
     /**
      * Get the failed login response instance.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -110,7 +116,7 @@ class LoginController extends Controller
     /**
      * Redirect the user after determining they are locked out.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return void
      * @throws \Illuminate\Validation\ValidationException
      */

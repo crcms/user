@@ -12,41 +12,76 @@ namespace CrCms\User\Services\Behaviors;
 use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Models\UserBehaviorModel;
 use CrCms\User\Models\UserModel;
+use CrCms\User\Repositories\UserBehaviorRepository;
+use CrCms\User\Services\Behaviors\Contracts\BehaviorCheckContract;
 use CrCms\User\Services\Behaviors\Contracts\BehaviorContract;
+use CrCms\User\Services\Behaviors\Contracts\BehaviorCreateContract;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
-class RegisterMailBehavior extends AbstractBehavior implements BehaviorContract
+/**
+ * Class RegisterMailBehavior
+ * @package CrCms\User\Services\Behaviors
+ */
+class RegisterMailBehavior extends AbstractBehavior implements BehaviorCreateContract, BehaviorCheckContract
 {
-    public function create(UserModel $userModel, ?Request $request = null, array $data = []): UserBehaviorModel
+    /**
+     * @param array $data
+     * @return UserBehaviorModel
+     */
+    public function create(array $data = []): UserBehaviorModel
     {
         $extensions = [
-            'user_id' => $userModel->id,
+            'user_id' => $this->user->id,
             'expired_at' => now()->addHours(2)->getTimestamp(),
             'secret' => Str::random(6),
         ];
 
         $extensions['hash'] = Hash::make(implode('.', $extensions));
+        $extensions['redirect'] = 'auth.login';
 
-        return $this->userBehaviorRepository->create([
-            'user_id' => $userModel->id,
-            'type' => UserAttribute::AUTH_TYPE_REGISTER_AUTHENTICATION,
+        $userBehavior = $this->userBehaviorRepository()->create([
+            'user_id' => $this->user->id,
+            'type' => UserAttribute::AUTH_TYPE_REGISTER_EMAIL_AUTHENTICATION,
             'status' => UserAttribute::AUTH_STATUS_DEFAULT,
             'extension' => $extensions,
             'ip' => $data['ip'] ?? '0.0.0.0',
             'agent' => $data['agent'] ?? ''
         ]);
+
+        $this->setUserBehavior($userBehavior);
+
+        return $userBehavior;
     }
 
-    public function validate(UserModel $userModel, Request $request): bool
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function validateRule(int $id): bool
     {
-        // TODO: Implement validate() method.
+        $userBehavior = $this->userBehaviorRepository()->byIntIdOrFail($id);
+
+        //一堆验证处理
+
+
+        $this->setUserBehavior($this->update($id));
+
+        return true;
     }
 
-    public function update(int $id, UserModel $userModel, ?Request $request = null, array $data = []): UserBehaviorModel
+    /**
+     * @return string
+     */
+    public function generateRule(): string
     {
-        // TODO: Implement update() method.
-    }
+        $urlQuery = (array)$this->userBehavior->extension;
 
+        $urlQuery['behavior_id'] = $this->userBehavior->id;
+        $urlQuery['behavior_type'] = $this->userBehavior->type;
+
+        return URL::temporarySignedRoute('behavior_auth.get', $this->userBehavior->extension->expired_at, $urlQuery);
+    }
 }

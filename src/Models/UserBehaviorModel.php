@@ -20,6 +20,13 @@ class UserBehaviorModel extends Model
     protected $table = 'user_behaviors';
 
     /**
+     * @var array
+     */
+    protected $casts = [
+        'extension' => 'object'
+    ];
+
+    /**
      * @return BelongsTo
      */
     public function belongsToUser(): BelongsTo

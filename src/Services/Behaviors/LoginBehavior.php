@@ -11,16 +11,14 @@ namespace CrCms\User\Services\Behaviors;
 
 use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Models\UserBehaviorModel;
-use CrCms\User\Models\UserModel;
 use CrCms\User\Repositories\UserBehaviorRepository;
 use CrCms\User\Services\Behaviors\Contracts\BehaviorCreateContract;
-use Illuminate\Http\Request;
 
 /**
- * Class RegisterBehavior
+ * Class LoginBehavior
  * @package CrCms\User\Services\Behaviors
  */
-class RegisterBehavior extends AbstractBehavior implements BehaviorCreateContract
+class LoginBehavior extends AbstractBehavior implements BehaviorCreateContract
 {
     /**
      * @param array $data

@@ -86,9 +86,9 @@ class UserAttribute extends AbstractAttributeContract
     const AUTH_TYPE_RESET_PASSWORD = 3;
 
     /**
-     * 认证类型 - 注册认证
+     * 认证类型 - 注册邮件认证
      */
-    const AUTH_TYPE_REGISTER_AUTHENTICATION = 4;
+    const AUTH_TYPE_REGISTER_EMAIL_AUTHENTICATION = 4;
 
     /**
      * 用户验证状态 - 验证成功

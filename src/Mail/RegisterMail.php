@@ -2,20 +2,16 @@
 
 namespace CrCms\User\Mail;
 
-use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Models\UserModel;
-use CrCms\User\Repositories\AuthLogRepository;
-use CrCms\User\Services\Behaviors\RegisterMailBehavior;
-use CrCms\User\Services\Verification\RegisterMailVerification;
 use Illuminate\Bus\Queueable;
-use Illuminate\Http\Request;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
 
+/**
+ * Class RegisterMail
+ * @package CrCms\User\Mail
+ */
 class RegisterMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
@@ -25,12 +21,20 @@ class RegisterMail extends Mailable implements ShouldQueue
      */
     public $user;
 
-    protected $data;
+    /**
+     * @var string
+     */
+    public $url;
 
-    public function __construct(UserModel $userModel, array $data)
+    /**
+     * RegisterMail constructor.
+     * @param UserModel $userModel
+     * @param string $url
+     */
+    public function __construct(UserModel $userModel, string $url)
     {
         $this->user = $userModel;
-        $this->data = $data;
+        $this->url = $url;
     }
 
     /**
@@ -40,18 +44,8 @@ class RegisterMail extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        $behavior = $this->registerMailBehavior()->create($this->user, null, $this->data);
-        $urlQuery = json_decode($behavior->extension, true);
-        $urlQuery['log_id'] = $behavior->id;
-
         return $this->view('user::emails.register')->with([
-            'url' => URL::temporarySignedRoute('auth_verification.post',$urlQuery['expired_at'],$urlQuery)//('auth_verification.post', $urlQuery),
+            'url' => $this->url,
         ]);
-    }
-
-
-    protected function registerMailBehavior(): RegisterMailBehavior
-    {
-        return app(RegisterMailBehavior::class);
     }
 }

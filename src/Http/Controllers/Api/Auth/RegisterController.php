@@ -5,8 +5,11 @@ namespace CrCms\User\Http\Controllers\Api\Auth;
 use CrCms\Foundation\App\Http\Controllers\Controller;
 use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Events\AuthInfoEvent;
+use CrCms\User\Events\RegisteredEvent;
 use CrCms\User\Models\UserModel;
 use CrCms\User\Repositories\UserRepository;
+use CrCms\User\Services\Behaviors\RegisterBehavior;
+use CrCms\User\Services\Behaviors\RegisterMailBehavior;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -46,7 +49,7 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -68,17 +71,51 @@ class RegisterController extends Controller
     }
 
     /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        $user = $this->create($request->all());
+
+        $this->registeredEvent($request, $user);
+
+        $this->guard()->login($user);
+
+        return $this->registered($request, $user)
+            ?: redirect($this->redirectPath());
+    }
+
+    /**
      * @param Request $request
      * @param UserModel $user
      * @return \Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
     protected function registered(Request $request, UserModel $user)
     {
-        //save login info
-        //event(new AuthInfoEvent($user, UserAttribute::AUTH_TYPE_REGISTER));
-
         return $this->response->array([
             'data' => $this->repository->getTokenInfoByUser($user)
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param UserModel $user
+     * @return void
+     */
+    protected function registeredEvent(Request $request, UserModel $user): void
+    {
+        event(new RegisteredEvent(
+            $user,
+            UserAttribute::AUTH_TYPE_REGISTER,
+            [
+                'ip' => $request->ip(),
+                'agent' => $request->userAgent(),
+            ]
+        ));
     }
 }

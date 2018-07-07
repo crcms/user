@@ -9,35 +9,54 @@
 
 namespace CrCms\User\Listeners;
 
+use CrCms\User\Attributes\UserAttribute;
+use CrCms\User\Events\RegisteredEvent;
 use CrCms\User\Mail\RegisterMail;
+use CrCms\User\Models\UserBehaviorModel;
 use CrCms\User\Repositories\AuthLogRepository;
 use CrCms\User\Repositories\UserBehaviorRepository;
+use CrCms\User\Services\Behaviors\AbstractBehavior;
+use CrCms\User\Services\Behaviors\BehaviorFactory;
+use CrCms\User\Services\Behaviors\Contracts\BehaviorContract;
 use CrCms\User\Services\Behaviors\RegisterMailBehavior;
 use CrCms\User\Services\Verification\RegisterMailVerification;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Http\Request;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
 /**
  * Class RegisterMailListener
  * @package CrCms\User\Listeners
  */
-class RegisterMailListener
+class RegisterMailListener implements ShouldQueue
 {
+    use InteractsWithQueue, SerializesModels;
 
-    protected $request;
-
-    public function __construct(Request $request)
+    /**
+     * @param RegisteredEvent $registered
+     */
+    public function handle(RegisteredEvent $registered)
     {
-        $this->request = $request;
-    }
+        $registerMailBehavior = $this->registerMailBehavior($registered);
 
-    public function handle(Registered $registered)
-    {
+        $userBehavior = $registerMailBehavior->create($registered->data);
+
         Mail::to($registered->user->email)
             ->queue(
-                (new RegisterMail($registered->user,$this->request->all()))
+                (new RegisterMail($registered->user, $registerMailBehavior->generateRule()))
                     ->onQueue('emails')
             );
+    }
+
+    /**
+     * @param RegisteredEvent $registered
+     * @return \CrCms\User\Services\Behaviors\AbstractBehavior
+     */
+    protected function registerMailBehavior(RegisteredEvent $registered): AbstractBehavior
+    {
+        return BehaviorFactory::factory(UserAttribute::AUTH_TYPE_REGISTER_EMAIL_AUTHENTICATION, $registered->user);
     }
 }

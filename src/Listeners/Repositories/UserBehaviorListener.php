@@ -21,7 +21,7 @@ class UserBehaviorListener
     {
         if (isset($data['extension'])) {
             $userBehaviorRepository->addData([
-                'extension' => json_encode($data['extension'])
+                'extension' => (object)$data['extension']
             ]);
         }
     }
