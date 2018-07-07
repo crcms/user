@@ -45,7 +45,7 @@ class UserRepository extends AbstractRepository
 
         return [
             'access_token' => $token,
-            'token_type' => 'bearer',
+            'token_type' => 'Bearer',
             'expires_in' => Auth::guard()->factory()->getTTL() * 60
         ];
     }

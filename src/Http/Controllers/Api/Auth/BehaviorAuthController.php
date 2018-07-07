@@ -20,6 +20,7 @@ class BehaviorAuthController extends Controller
     /**
      * @param int $id
      * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getCertification(int $id, Request $request)
     {
@@ -30,6 +31,7 @@ class BehaviorAuthController extends Controller
             return $this->response->errorUnauthorized();
         }
 
-        return $behaviorService->getUserBehavior()->extension->redirect;
+        $route = $behaviorService->getUserBehavior()->extension->redirect ?? null;
+        return $this->response->data(['url' => $route ? route($route) : null]);
     }
 }

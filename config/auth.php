@@ -94,10 +94,8 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'table' => 'user_verification',
-            'expire' => config('user.verification_expire'),
-            'verification' => \CrCms\User\Services\Verification\ResetPasswordVerification::class
+            'table' => 'password_resets',
+            'expire' => 60,
         ],
     ],
-
 ];

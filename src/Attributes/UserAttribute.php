@@ -91,6 +91,11 @@ class UserAttribute extends AbstractAttributeContract
     const AUTH_TYPE_REGISTER_EMAIL_AUTHENTICATION = 4;
 
     /**
+     * 认证类型 - 忘记密码
+     */
+    const AUTH_TYPE_FORGET_PASSWORD = 5;
+
+    /**
      * 用户验证状态 - 验证成功
      */
     const AUTH_STATUS_SUCCESS = 1;

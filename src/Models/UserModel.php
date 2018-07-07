@@ -13,6 +13,7 @@ use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Services\Notifications\ResetPasswordNotification;
 use CrCms\User\Services\Verification\Contracts\Verification;
 use CrCms\User\Services\Verification\ResetPasswordVerification;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -25,7 +26,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class UserModel extends Authenticatable implements JWTSubject
 {
-    use SoftDeletes, Notifiable;
+    use SoftDeletes, Notifiable, CanResetPassword;
 
     /**
      * @var string
@@ -84,17 +85,6 @@ class UserModel extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
-    }
-//
-//    public function hasOneVerification()
-//    {
-//        return $this->hasOne(UserVerificationModel::class,'user_id','id')->order
-//    }
-
-
-    public function hasManyAuthInfo(): HasMany
-    {
-        return $this->hasMany(AuthInfoModel::class, 'user_id', 'id');
     }
 
     public function sendPasswordResetNotification($token)
