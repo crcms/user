@@ -9,6 +9,7 @@
 
 namespace CrCms\User\Services\Behaviors;
 
+use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Models\UserBehaviorModel;
 use CrCms\User\Services\Behaviors\Contracts\BehaviorCheckContract;
 use CrCms\User\Services\Behaviors\Contracts\BehaviorCreateContract;
@@ -33,8 +34,10 @@ class ForgetPasswordBehavior extends AbstractBehavior implements BehaviorCreateC
     {
         $userBehavior = $this->userBehaviorRepository()->create([
             'user_id' => $this->user->id,
-            'ip' => $data['ip'],
-            'agent' => $data['agent'],
+            'type' => UserAttribute::AUTH_TYPE_FORGET_PASSWORD,
+            'status' => UserAttribute::AUTH_STATUS_DEFAULT,
+            'ip' => $data['ip'] ?? '0.0.0.0',
+            'agent' => $data['agent'] ?? '',
         ]);
 
         $this->setUserBehavior($userBehavior);

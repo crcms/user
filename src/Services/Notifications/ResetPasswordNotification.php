@@ -9,6 +9,7 @@
 
 namespace CrCms\User\Services\Notifications;
 
+use CrCms\User\Events\BehaviorCreatedEvent;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -43,6 +44,12 @@ class ResetPasswordNotification extends ResetPassword implements ShouldQueue
         if (static::$toMailCallback) {
             return call_user_func(static::$toMailCallback, $notifiable, $this->token);
         }
+
+        event(new BehaviorCreatedEvent(
+            $this->broker()->getUser($request->only('email')),
+            UserAttribute::AUTH_TYPE_FORGET_PASSWORD,
+            ['ip' => $request->ip(), 'agent' => $request->user()]
+        ));
 
         return (new MailMessage)
             ->view('user::emails.forget_password', ['user' => $notifiable, 'token' => $this->token, 'expire' => config('user.verification_expire')]);

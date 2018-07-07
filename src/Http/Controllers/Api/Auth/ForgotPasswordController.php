@@ -3,6 +3,8 @@
 namespace CrCms\User\Http\Controllers\Api\Auth;
 
 use CrCms\Foundation\App\Http\Controllers\Controller;
+use CrCms\User\Attributes\UserAttribute;
+use CrCms\User\Events\BehaviorCreatedEvent;
 use CrCms\User\Http\Requests\Auth\ResetPasswordUrlRequest;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
@@ -24,10 +26,11 @@ class ForgotPasswordController extends Controller
     use SendsPasswordResetEmails;
 
     /**
+     * @param Request $request
      * @param $response
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function sendResetLinkResponse($response)
+    public function sendResetLinkResponse(Request $request, $response)
     {
         return $this->response->noContent();
     }
@@ -55,7 +58,7 @@ class ForgotPasswordController extends Controller
         );
 
         return $response == Password::RESET_LINK_SENT
-            ? $this->sendResetLinkResponse($response)
+            ? $this->sendResetLinkResponse($request, $response)
             : $this->sendResetLinkFailedResponse($request, $response);
     }
 
