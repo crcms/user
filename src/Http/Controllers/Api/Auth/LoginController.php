@@ -4,11 +4,9 @@ namespace CrCms\User\Http\Controllers\Api\Auth;
 
 use CrCms\Foundation\App\Http\Controllers\Controller;
 use CrCms\User\Attributes\UserAttribute;
-use CrCms\User\Events\AuthInfoEvent;
 use CrCms\User\Events\BehaviorCreatedEvent;
 use CrCms\User\Models\UserModel;
 use CrCms\User\Repositories\UserRepository;
-use CrCms\User\Services\Behaviors\LoginBehavior;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;

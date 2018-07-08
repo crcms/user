@@ -3,12 +3,8 @@
 namespace CrCms\User\Http\Controllers\Api\Auth;
 
 use CrCms\Foundation\App\Http\Controllers\Controller;
-use CrCms\User\Attributes\UserAttribute;
-use CrCms\User\Events\BehaviorCreatedEvent;
 use CrCms\User\Http\Requests\Auth\ResetPasswordUrlRequest;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
 
 class ForgotPasswordController extends Controller
 {

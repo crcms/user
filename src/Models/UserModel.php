@@ -11,11 +11,6 @@ namespace CrCms\User\Models;
 
 use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Events\ForgetPasswordEvent;
-use CrCms\User\Services\Notifications\ResetPasswordNotification;
-use CrCms\User\Services\Verification\Contracts\Verification;
-use CrCms\User\Services\Verification\ResetPasswordVerification;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;

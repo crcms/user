@@ -11,7 +11,6 @@ namespace CrCms\User\Http\Controllers\Api\Auth;
 
 use CrCms\Foundation\App\Http\Controllers\Controller;
 use CrCms\User\Models\UserModel;
-use CrCms\User\Repositories\UserBehaviorRepository;
 use CrCms\User\Services\Behaviors\BehaviorFactory;
 use Illuminate\Http\Request;
 

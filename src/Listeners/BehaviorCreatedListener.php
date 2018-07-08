@@ -13,7 +13,6 @@ use CrCms\User\Events\BehaviorCreatedEvent;
 use CrCms\User\Repositories\UserBehaviorRepository;
 use CrCms\User\Services\Behaviors\AbstractBehavior;
 use CrCms\User\Services\Behaviors\BehaviorFactory;
-use CrCms\User\Services\Behaviors\Contracts\BehaviorContract;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 

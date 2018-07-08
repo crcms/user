@@ -11,7 +11,6 @@ namespace CrCms\User\Http\Resources;
 
 use CrCms\Foundation\App\Http\Resources\Resource;
 use CrCms\User\Attributes\UserAttribute;
-use CrCms\User\Models\UserModel;
 use CrCms\User\Repositories\UserRepository;
 
 /**
@@ -23,7 +22,7 @@ class UserResource extends Resource
     /**
      * @var array
      */
-    protected $defaultIncludes = ['login_info', 'register_info'];
+    protected $defaultIncludes = [];
 
     /**
      * @param \Illuminate\Http\Request $request
@@ -40,24 +39,6 @@ class UserResource extends Resource
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
         ];
-    }
-
-    /**
-     * @param UserModel $userModel
-     * @return \CrCms\Foundation\App\Http\Resources\ResourceCollection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     */
-    protected function includeLoginInfo(UserModel $userModel)
-    {
-        return AuthInfoResource::collection($this->userRepository()->getLoginInfo($userModel));
-    }
-
-    /**
-     * @param UserModel $userModel
-     * @return AuthInfoResource
-     */
-    protected function includeRegisterInfo(UserModel $userModel)
-    {
-        return new AuthInfoResource($this->userRepository()->getRegisterInfo($userModel));
     }
 
     /**

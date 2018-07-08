@@ -11,12 +11,8 @@ namespace CrCms\User\Services\Behaviors;
 
 use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Models\UserBehaviorModel;
-use CrCms\User\Models\UserModel;
-use CrCms\User\Repositories\UserBehaviorRepository;
 use CrCms\User\Services\Behaviors\Contracts\BehaviorCheckContract;
-use CrCms\User\Services\Behaviors\Contracts\BehaviorContract;
 use CrCms\User\Services\Behaviors\Contracts\BehaviorCreateContract;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;

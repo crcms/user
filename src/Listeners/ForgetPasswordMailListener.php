@@ -9,7 +9,6 @@
 
 namespace CrCms\User\Listeners;
 
-use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Events\ForgetPasswordEvent;
 use CrCms\User\Mail\ForgetPasswordMail;
 use CrCms\User\Services\Behaviors\AbstractBehavior;

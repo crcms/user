@@ -11,8 +11,6 @@ namespace CrCms\User\Services\Behaviors;
 
 use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Models\UserModel;
-use CrCms\User\Services\Behaviors\Contracts\BehaviorCheckContract;
-use CrCms\User\Services\Behaviors\Contracts\BehaviorContract;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 

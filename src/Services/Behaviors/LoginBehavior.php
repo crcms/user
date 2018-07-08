@@ -11,7 +11,6 @@ namespace CrCms\User\Services\Behaviors;
 
 use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Models\UserBehaviorModel;
-use CrCms\User\Repositories\UserBehaviorRepository;
 use CrCms\User\Services\Behaviors\Contracts\BehaviorCreateContract;
 
 /**

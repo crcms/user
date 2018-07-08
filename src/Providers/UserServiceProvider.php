@@ -3,23 +3,16 @@
 namespace CrCms\User\Providers;
 
 use CrCms\Foundation\App\Providers\ModuleServiceProvider;
-use CrCms\User\Attributes\UserAttribute;
-use CrCms\User\Events\AuthInfoEvent;
 use CrCms\User\Events\BehaviorCreatedEvent;
 use CrCms\User\Events\ForgetPasswordEvent;
 use CrCms\User\Events\RegisteredEvent;
 use CrCms\User\Listeners\BehaviorCreatedListener;
 use CrCms\User\Listeners\ForgetPasswordMailListener;
 use CrCms\User\Listeners\RegisterMailListener;
-use CrCms\User\Listeners\Repositories\AuthLogListener;
 use CrCms\User\Listeners\Repositories\UserBehaviorListener;
 use CrCms\User\Listeners\Repositories\UserListener;
-use CrCms\User\Repositories\AuthLogRepository;
 use CrCms\User\Repositories\UserBehaviorRepository;
 use CrCms\User\Repositories\UserRepository;
-use CrCms\User\Services\Behaviors\BehaviorFactory;
-use CrCms\User\Services\Passwords\PasswordBroker;
-use CrCms\User\Services\Passwords\PasswordBrokerManager;
 use Illuminate\Support\Facades\Event;
 use Tymon\JWTAuth\Providers\LaravelServiceProvider;
 

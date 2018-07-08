@@ -7,8 +7,6 @@ use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Events\RegisteredEvent;
 use CrCms\User\Models\UserModel;
 use CrCms\User\Repositories\UserRepository;
-use CrCms\User\Services\Behaviors\RegisterBehavior;
-use CrCms\User\Services\Behaviors\RegisterMailBehavior;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;

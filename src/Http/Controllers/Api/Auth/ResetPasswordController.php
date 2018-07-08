@@ -6,10 +6,8 @@ use CrCms\Foundation\App\Http\Controllers\Controller;
 use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Models\UserModel;
 use CrCms\User\Services\Behaviors\BehaviorFactory;
-use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
