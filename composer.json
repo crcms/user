@@ -37,14 +37,5 @@
         "post-autoload-dump": [
             "@php ../../../bin/artisan jwt:secret"
         ]
-    },
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://packagist.laravel-china.org"
-        }
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^7.2"
     }
 }
