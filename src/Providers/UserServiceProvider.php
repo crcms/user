@@ -6,9 +6,10 @@ use CrCms\Foundation\App\Providers\ModuleServiceProvider;
 use CrCms\User\Attributes\UserAttribute;
 use CrCms\User\Events\AuthInfoEvent;
 use CrCms\User\Events\BehaviorCreatedEvent;
+use CrCms\User\Events\ForgetPasswordEvent;
 use CrCms\User\Events\RegisteredEvent;
-use CrCms\User\Listeners\AuthInfoListener;
 use CrCms\User\Listeners\BehaviorCreatedListener;
+use CrCms\User\Listeners\ForgetPasswordMailListener;
 use CrCms\User\Listeners\RegisterMailListener;
 use CrCms\User\Listeners\Repositories\AuthLogListener;
 use CrCms\User\Listeners\Repositories\UserBehaviorListener;
@@ -62,8 +63,19 @@ class UserServiceProvider extends ModuleServiceProvider
 
         $this->loadViewsFrom($this->basePath . '/resources/views', $this->name);
 
+        $this->listens();
+    }
+
+    /**
+     * @return void
+     */
+    protected function listens()
+    {
         Event::listen(RegisteredEvent::class, RegisterMailListener::class);
         Event::listen(RegisteredEvent::class, BehaviorCreatedListener::class);
+
+        Event::listen(ForgetPasswordEvent::class, ForgetPasswordMailListener::class);
+
         Event::listen(BehaviorCreatedEvent::class, BehaviorCreatedListener::class);
     }
 
@@ -78,35 +90,8 @@ class UserServiceProvider extends ModuleServiceProvider
             $this->basePath . 'config/auth.php', 'auth'
         );
 
-//        $this->app->singleton(\CrCms\User\Services\Verification\Contracts\VerificationCode::class,
-//            \CrCms\User\Services\Verification\VerificationCode::class);
-
         $this->app->register(\Illuminate\Auth\AuthServiceProvider::class);
         $this->app->register(\Illuminate\Auth\Passwords\PasswordResetServiceProvider::class);
-
-//        $this->app->singleton('auth.password', function ($app) {
-//            return new PasswordBrokerManager($app);
-//        });
-
-//        dump($this->app['auth']->createUserProvider($config['provider'] ?? null));
-//        $this->app->make('auth.password')->addBroker(
-//            new PasswordBroker(
-//                BehaviorFactory::factory(UserAttribute::AUTH_TYPE_FORGET_PASSWORD),
-//                $this->app['auth']->createUserProvider($config['provider'] ?? null)
-//            )
-//        );
-
-
-//        $this->app->bind('auth.password.broker', function ($app) {
-//            dd($this->app['auth']->createUserProvider($config['provider'] ?? null));
-//            return new PasswordBroker(
-//                BehaviorFactory::factory(UserAttribute::AUTH_TYPE_FORGET_PASSWORD),
-//                $this->app['auth']->createUserProvider($config['provider'] ?? null)
-//            );
-//        });
-//
-//        $this->app->alias('auth.password.broker', PasswordBroker::class);
-
         $this->app->register(LaravelServiceProvider::class);
     }
 }

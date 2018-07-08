@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('deleted_at')->default(null)->nullable()->comment('删除时间');
             $table->string('token', 100)->nullable()->comment('token');
             $table->string('remember_token', 150)->nullable()->comment('remember token');
+            $table->ipAddress('register_ip')->nullable()->commnet('Register IpAddress');
 
             $table->unique('name');
             $table->unique('tel');

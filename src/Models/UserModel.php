@@ -10,6 +10,7 @@
 namespace CrCms\User\Models;
 
 use CrCms\User\Attributes\UserAttribute;
+use CrCms\User\Events\ForgetPasswordEvent;
 use CrCms\User\Services\Notifications\ResetPasswordNotification;
 use CrCms\User\Services\Verification\Contracts\Verification;
 use CrCms\User\Services\Verification\ResetPasswordVerification;
@@ -26,7 +27,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class UserModel extends Authenticatable implements JWTSubject
 {
-    use SoftDeletes, Notifiable, CanResetPassword;
+    use SoftDeletes, Notifiable;
 
     /**
      * @var string
@@ -87,8 +88,18 @@ class UserModel extends Authenticatable implements JWTSubject
         return [];
     }
 
+    /**
+     * @param string $token
+     * @return void
+     */
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new ResetPasswordNotification($token));
+        event(new ForgetPasswordEvent(
+            $this,
+            UserAttribute::AUTH_TYPE_FORGET_PASSWORD,
+            $token,
+            ['ip' => app('request')->ip(), 'agent' => app('request')->userAgent()]
+        ));
+        //$this->notify(new ResetPasswordNotification($token));
     }
 }

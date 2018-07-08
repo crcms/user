@@ -39,7 +39,7 @@ class BehaviorFactory
             case UserAttribute::AUTH_TYPE_REGISTER:
                 return new RegisterBehavior($userModel, $request, $data);
             case UserAttribute::AUTH_TYPE_FORGET_PASSWORD:
-                return new ForgetPasswordBehavior($userModel, $request, $data);
+                return new ForgetPasswordMailBehavior($userModel, $request, $data);
             default:
                 throw new InvalidArgumentException('Unknown authentication type');
         }

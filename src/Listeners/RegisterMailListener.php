@@ -40,13 +40,13 @@ class RegisterMailListener implements ShouldQueue
      */
     public function handle(RegisteredEvent $registered)
     {
-        $registerMailBehavior = $this->registerMailBehavior($registered);
+        $registerBehavior = $this->registerBehavior($registered);
 
-        $userBehavior = $registerMailBehavior->create($registered->data);
+        $userBehavior = $registerBehavior->create($registered->data);
 
         Mail::to($registered->user->email)
             ->queue(
-                (new RegisterMail($registered->user, $registerMailBehavior->generateRule()))
+                (new RegisterMail($registered->user, $registerBehavior->generateRule()))
                     ->onQueue('emails')
             );
     }
@@ -55,7 +55,7 @@ class RegisterMailListener implements ShouldQueue
      * @param RegisteredEvent $registered
      * @return \CrCms\User\Services\Behaviors\AbstractBehavior
      */
-    protected function registerMailBehavior(RegisteredEvent $registered): AbstractBehavior
+    protected function registerBehavior(RegisteredEvent $registered): AbstractBehavior
     {
         return BehaviorFactory::factory(UserAttribute::AUTH_TYPE_REGISTER_EMAIL_AUTHENTICATION, $registered->user);
     }

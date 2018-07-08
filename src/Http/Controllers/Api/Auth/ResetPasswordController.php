@@ -4,13 +4,13 @@ namespace CrCms\User\Http\Controllers\Api\Auth;
 
 use CrCms\Foundation\App\Http\Controllers\Controller;
 use CrCms\User\Attributes\UserAttribute;
-use CrCms\User\Events\AuthInfoEvent;
 use CrCms\User\Models\UserModel;
 use CrCms\User\Services\Behaviors\BehaviorFactory;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class ResetPasswordController extends Controller
@@ -53,9 +53,9 @@ class ResetPasswordController extends Controller
         // will update the password on an actual user model and persist it to the
         // database. Otherwise we will parse the error and return the response.
         $response = $this->broker()->reset(
-            $this->credentials($request), function ($user, $password) {
+            $this->credentials($request), function ($user, $password) use ($request) {
+            $this->behaviorValidate($request, $user);
             $this->resetPassword($user, $password);
-
         }
         );
 
@@ -68,31 +68,17 @@ class ResetPasswordController extends Controller
     }
 
     /**
-     * @param $user
-     * @param $password
+     * @param Request $request
+     * @param UserModel $user
+     * @return void
      */
-//    public function resetPassword($user, $password)
-//    {
-//        $user->password = Hash::make($password);
-//
-//        //$user->setRememberToken(Str::random(60));
-//
-//        $user->save();
-//
-//        event(new PasswordReset($user));
-//        event(new AuthInfoEvent($user, UserAttribute::AUTH_TYPE_RESET_PASSWORD));
-//
-//        //$this->guard()->login($user);
-//    }
-
-//    protected function rules()
-//    {
-//        return [
-//            'token' => 'required',
-//            'email' => 'required|email',
-//            'password' => 'required|confirmed|min:6',
-//        ];
-//    }
+    protected function behaviorValidate(Request $request, UserModel $user)
+    {
+        $behavior = BehaviorFactory::factory(UserAttribute::AUTH_TYPE_FORGET_PASSWORD, $user, $request);
+        if (!$behavior->validateRule($request->input('behavior_id'))) {
+            return $this->response->errorUnauthorized();
+        }
+    }
 
     /**
      * @param $response
@@ -100,11 +86,6 @@ class ResetPasswordController extends Controller
      */
     protected function sendResetResponse($response)
     {
-        BehaviorFactory::factory(
-            UserAttribute::AUTH_TYPE_FORGET_PASSWORD,
-            $this->broker()->getUser
-        );
-
         return $this->response->noContent();
     }
 
@@ -115,14 +96,5 @@ class ResetPasswordController extends Controller
     protected function sendResetFailedResponse(Request $request, $response)
     {
         throw new UnprocessableEntityHttpException(trans($response));
-    }
-
-    protected function forgetPasswordEvent(UserModel $userModel)
-    {
-        BehaviorFactory::factory(
-            UserAttribute::AUTH_TYPE_FORGET_PASSWORD,
-            $userModel,
-            arr
-        );
     }
 }

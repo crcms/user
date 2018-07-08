@@ -4,7 +4,6 @@ namespace CrCms\User\Http\Controllers\Api\Auth;
 
 use CrCms\Foundation\App\Http\Controllers\Controller;
 use CrCms\User\Attributes\UserAttribute;
-use CrCms\User\Events\AuthInfoEvent;
 use CrCms\User\Events\RegisteredEvent;
 use CrCms\User\Models\UserModel;
 use CrCms\User\Repositories\UserRepository;
