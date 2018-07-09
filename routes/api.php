@@ -6,6 +6,7 @@ Route::prefix('api/v1')->middleware(['api'])->group(function () {
     Route::prefix('auth')->middleware([])->namespace('CrCms\User\Http\Controllers\Api\Auth')->group(function () {
         Route::post('register', 'RegisterController@register');
         Route::post('login', 'LoginController@login')->name('auth.login');
+        Route::get('logout', 'LoginController@logout')->name('auth.logout');
         Route::post('forget-password', 'ForgotPasswordController@sendResetLinkEmail');
         Route::post('reset-password-url', 'ForgotPasswordController@postResetPasswordUrl')->name('user.auth.forget_password.reset_password_url');
         Route::post('reset-password', 'ResetPasswordController@reset')->name('user.auth.reset_password.reset');
