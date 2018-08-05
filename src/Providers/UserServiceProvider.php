@@ -35,15 +35,6 @@ class UserServiceProvider extends ModuleServiceProvider
     /**
      * @return void
      */
-    protected function repositoryListener(): void
-    {
-        UserRepository::observer(UserListener::class);
-        UserBehaviorRepository::observer(UserBehaviorListener::class);
-    }
-
-    /**
-     * @return void
-     */
     public function boot(): void
     {
         parent::boot();
@@ -55,21 +46,6 @@ class UserServiceProvider extends ModuleServiceProvider
         ]);
 
         $this->loadViewsFrom($this->basePath . '/resources/views', $this->name);
-
-        $this->listens();
-    }
-
-    /**
-     * @return void
-     */
-    protected function listens()
-    {
-        Event::listen(RegisteredEvent::class, RegisterMailListener::class);
-        Event::listen(RegisteredEvent::class, BehaviorCreatedListener::class);
-
-        Event::listen(ForgetPasswordEvent::class, ForgetPasswordMailListener::class);
-
-        Event::listen(BehaviorCreatedEvent::class, BehaviorCreatedListener::class);
     }
 
     /**
