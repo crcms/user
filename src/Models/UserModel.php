@@ -9,8 +9,6 @@
 
 namespace CrCms\User\Models;
 
-use CrCms\User\Attributes\UserAttribute;
-use CrCms\User\Events\ForgetPasswordEvent;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -37,7 +35,7 @@ class UserModel extends Authenticatable implements JWTSubject
     /**
      * @var array
      */
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at', 'ticket_expired_at'];
 
     /**
      * @var array

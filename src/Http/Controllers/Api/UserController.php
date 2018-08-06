@@ -10,6 +10,7 @@
 namespace CrCms\User\Http\Controllers\Api;
 
 use CrCms\Foundation\App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class UserController
@@ -20,7 +21,7 @@ class UserController extends Controller
 
     public function getShow()
     {
-        return 123;
+        return Auth::user();
     }
 
 }

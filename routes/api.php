@@ -3,11 +3,14 @@
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['api'])->group(function () {
-    Route::domain('api.user.crcms.local')->namespace('CrCms\User\Http\Controllers\Api')
+    Route::prefix('api/v1')->namespace('CrCms\User\Http\Controllers\Api')
         ->middleware('auth:api')
         ->group(function(){
         Route::get('/','UserController@getShow')->name('test.index');
+
     });
+
+    Route::any('passport','CrCms\User\Http\Controllers\Api\PassportController@check');
 
     Route::prefix('manage')->namespace('CrCms\User\Http\Controllers\Api\Manage')->group(function () {
         Route::apiResource('users', 'UserController')->names([

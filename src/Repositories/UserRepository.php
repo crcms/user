@@ -9,18 +9,16 @@
 
 namespace CrCms\User\Repositories;
 
+use CrCms\Foundation\App\Handlers\Contracts\JWTPassportContract;
 use CrCms\Foundation\App\Repositories\AbstractRepository;
-use CrCms\User\Attributes\UserAttribute;
-use CrCms\User\Models\AuthInfoModel;
 use CrCms\User\Models\UserModel;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
  * Class UserRepository
  * @package CrCms\User\Repositories
  */
-class UserRepository extends AbstractRepository
+class UserRepository extends AbstractRepository implements JWTPassportContract
 {
     /**
      * @var array
@@ -36,37 +34,11 @@ class UserRepository extends AbstractRepository
     }
 
     /**
-     * @param UserModel $userModel
-     * @return array
+     * @param string $ticket
+     * @return JWTSubject
      */
-    public function getTokenInfoByUser(UserModel $userModel): array
+    public function getUser(string $ticket): JWTSubject
     {
-        $token = Auth::guard()->fromUser($userModel);
-
-        return [
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'expires_in' => Auth::guard()->factory()->getTTL() * 60
-        ];
-    }
-
-    /**
-     * @param UserModel $userModel
-     * @return \Illuminate\Database\Eloquent\Model|null|object|static
-     */
-    public function getRegisterInfo(UserModel $userModel)
-    {
-        return $userModel->hasManyAuthInfo()
-            ->where('type', UserAttribute::AUTH_TYPE_REGISTER)->first();
-    }
-
-    /**
-     * @param UserModel $userModel
-     * @return Collection
-     */
-    public function getLoginInfo(UserModel $userModel): Collection
-    {
-        return $userModel->hasManyAuthInfo()
-            ->where('type', UserAttribute::AUTH_TYPE_LOGIN)->orderBy('created_at', 'desc')->get();
+        return $this->where('ticket',$ticket)->firstOrFail();
     }
 }
